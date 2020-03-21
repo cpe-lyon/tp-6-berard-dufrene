@@ -59,6 +59,62 @@ shutdown now
 
 ### Exercice 3. Disques et partitions
 
+#### 1. Commencez par installer le paquet build-essential, qui contient tous les outils nécessaires (compilateurs, bibliothèques) à la compilation de programmes en C (entre autres).
+
+```
+sudo apt install build-essential
+```
+
+#### 2. Créez un fichier hello.c contenant le code suivant :
+
+```
+mkdir codeC
+vim codeC/hello.c
+```
+
+
+#### 3. Créez également un fichier Makefile :
+
+```
+vim codeC/Makefile
+```
+
+
+#### 4. Compilez le module à l’aide de la commande make, puis installez-le à l’aide de la commande make install.
+
+```
+make
+sudo make install
+```
+
+
+#### 5. Chargez le module ; vérifiez dans le journal du noyau que le message ”La fonction init_module() est appelée” a bien été inscrit, synonyme que le module a été chargé ; confirmez avec la commande lsmod.
+
+```
+lsblk
+```
+
+
+#### 6. Utilisez la commande modinfo pour obtenir des informations sur le module hello.ko ; vous devriez notamment voir les informations figurant dans le fichier C.
+
+```
+lsblk
+```
+
+
+#### 7. Déchargez le module ; vérifiez dans le journal du noyau que le message ”La fonction cleanup_module() est appelée” a bien été inscrit, synonyme que le module a été déchargé ; confirmez avec la commande lsmod.
+
+```
+lsblk
+```
+
+
+#### 8. Pour que le module soit chargé automatiquement au démarrage du système, il faut l’inscrire dans le fichier /etc/modules. Essayez, et vérifiez avec la commande lsmod après redémarrage de la machine.
+
+```
+lsblk
+```
+
 
 
 

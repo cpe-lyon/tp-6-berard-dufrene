@@ -227,5 +227,121 @@ lsmod | grep hello
 
 
 
+### Exercice 6. Interception de signaux
+
+#### 1. Commencez par écrire un script qui recopie dans un fichier tmp.txt chaque ligne saisie au clavier par l’utilisateur
+
+script :
+```
+#!/bin/sh
+
+while [ 1 ]
+do
+        read txt
+        echo $txt >> tmp.txt
+done
+```
+
+#### 2. Lancez votre script et appuyez sur CTRL+Z. Que se passe-t-il ? Comment faire pour que le script poursuive son exécution ?
+
+```
+sudo chmod +x recop.sh
+./ recop.sh
+```
+*resultat :*
+```
+pouet
+gaufre
+^Z
+[1]+  Stopped                 ./recop.sh
+```
+*Le script est arrêté par cette commande.
+On peut ensuite le reprendre en premier plan ou le basculer au second plan.*
+```
+fg
+-> ./recop.sh
+
+```
+ou
+```
+bg
+-> [4]+ ./recop.sh &
+```
+
+#### 3. Toujours pendant l’exécution du script, appuyez sur CTRL+C. Que se passe-t-il ?
+
+```
+./recop.sh
+gaufre
+^C
+```
+*Le programme est interrompu.
+A la difference de CTRL+Z, CTRL+C va tuer le processus qui ne pourra donc pas être repri.*
+
+
+#### 4. Modifiez votre script pour redéfinir les actions à effectuer quand le script reçoit les signaux SIGTSTP et SIGINT.
+
+Lignes à ajouter au script :
+```
+trap "echo 'OK, je fais un peu de ménage avant' ; rm -f tmp.txt ; exit" 2
+trap "echo 'Impossible de me placer en arrière-plan'" 20
+```
+
+
+#### 5. Testez le nouveau comportement de votre script en utilisant d’une part les raccourcis clavier, d’autre part la commande kill
+
+```
+./recop.sh
+->
+AAA
+^ZImpossible de me placer en arrière-plan
+^ZImpossible de me placer en arrière-plan
+^COK, je fais un peu de ménage avant
+```
+*Pour utiliser kill, comme j'utilise ma machine par ssh avec mon terminal personnel, j'ai lancé le processus avec mon terminal et j'ai envoyé les signaux avec ma VM.*
+```
+./recop.sh
+->
+ABC                                                     
+                        VM : killall -20 recop.sh
+Impossible de me placer en arrière-plan  
+                        VM : killall -2 recop.sh
+OK, je fais un peu de ménage avant                      
+```
+
+
+#### 6. Relancez votre script et faites immédiatement un CTRL+C : vous obtenez un message d’erreur vous indiquant que le fichier tmp.txt n’existe pas. A l’aide de la commande interne test, corrigez votre script pour que ce message n’apparaisse plus.
+
+*Ayant utilisé rm -f justement pour ce genre de désagrément, je n'ai pas ce soucis.
+Néanmoins, sans cette astuce, voici un script fonctionnel.*
+```
+#!/bin/sh
+
+fct()
+{
+        if [ -e tmp.txt ]; then
+                echo 'OK, je fais un peu de ménage avant'
+                rm tmp.txt
+        else
+                echo "OK, et j'ai rien à supprimer !"
+        fi
+        exit
+}
+
+trap fct 2
+trap "echo 'Impossible de me placer en arrière-plan'" 20
+
+
+while [ 1 ]
+do
+        read txt
+        echo $txt >> tmp.txt
+done                                                                                                                      ~            
+```
+
+
+
+
+
 
 
